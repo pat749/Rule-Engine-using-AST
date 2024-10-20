@@ -42,7 +42,7 @@ This application functions as a rule engine that assesses user eligibility based
 
 1. **Clone the Repository**
    ```bash
-   git clone "https://github.com/Tereshaa/Application-1-Rule-Engine-with-AST.git"
+   git clone "https://github.com/pat749/Rule-Engine-using-AST.git"
    ```
 2. **Install the Backend Dependencies**
    ```bash
