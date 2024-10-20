@@ -1,8 +1,6 @@
 
 # Application 1: Rule Engine using AST 
-![image](https://github.com/user-attachments/assets/dfb4461a-21f7-4560-b5f1-bc23d946ace4)
 
-Preview: 
 
 ## Overview
 
