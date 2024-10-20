@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rule Engine</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Londrina+Sketch&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
+      body {
+        font-family: "Trebuchet MS", sans-serif;
+        margin: 0;
+        padding: 0;
+        --color: rgba(114, 114, 114, 0.3);
+        background-color: #191a1a;
+        background-image: linear-gradient(
+            0deg,
+            transparent 24%,
+            var(--color) 25%,
+            var(--color) 26%,
+            transparent 27%,
+            transparent 74%,
+            var(--color) 75%,
+            var(--color) 76%,
+            transparent 77%,
+            transparent
+          ),
+          linear-gradient(
+            90deg,
+            transparent 24%,
+            var(--color) 25%,
+            var(--color) 26%,
+            transparent 27%,
+            transparent 74%,
+            var(--color) 75%,
+            var(--color) 76%,
+            transparent 77%,
+            transparent
+          );
+        background-size: 55px 55px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        background-color: transparent;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-family: "Londrina Sketch", sans-serif;
+        font-weight: 600;
+        font-size: 80px;
+        color: #d7fd00;
+        margin-bottom: 20px;
+      }
+
+      h2,
+      h3 {
+        font-family: "Chakra Petch", sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        color: #ffd105;
+        margin-bottom: 16px;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      form div,
+      form label {
+        font-size: 18px;
+        color: #ffcc00;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      form input[type="text"],
+      form textarea,
+      form select {
+        width: 100%;
+        max-width: 500px;
+        height: 30px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid rgb(16, 86, 82);
+        background-color: rgb(251, 243, 228);
+        transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+        margin-bottom: 12px;
+      }
+
+      form textarea {
+        height: 80px;
+        resize: none;
+      }
+
+      form input:focus,
+      form textarea:focus,
+      form select:focus {
+        border: 1px solid transparent;
+        box-shadow: 0px 0px 0px 2px rgb(251, 243, 228);
+        background-color: rgb(201, 193, 178);
+      }
+
+      form button {
+        width: 60%;
+        max-width: 300px;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        background-color: #29247d;
+        color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s;
+        margin-bottom: 12px;
+      }
+
+      form button:hover {
+        background-color: #000000;
+      }
+
+      pre {
+        background-color: transparent;
+        padding: 8px;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        color: #e0e0e0;
+      }
+
+      .rule-container {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: transparent;
+        margin-bottom: 12px;
+        text-align: left;
+      }
+
+      #add-rule {
+        background-color: #4a6d80;
+      }
+      #combined-rules-tree {
+        margin-top: 20px;
+        background-color: #2a2a2a;
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        color: #d7fd00;
+        text-align: left; /* Ensure text is aligned to the left */
+        white-space: pre; /* Maintain whitespace for proper alignment */
+      }
+      #combine-rules-result{
+        margin-top: 20px;
+        background-color: #2a2a2a;
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        color: #d7fd00;
+        text-align: left; /* Ensure text is aligned to the left */
+        white-space: pre; 
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        form input[type="text"],
+        form textarea,
+        form select {
+          width: 100%;
+          padding: 6px;
+        }
+
+        form button {
+          padding: 8px;
+          font-size: 14px;
+        }
+
+        form textarea {
+          height: 60px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 5px;
+        }
+
+        form button {
+          padding: 6px;
+          font-size: 12px;
+        }
+      }
+
+      #create-rule-result {
+    margin-top: 20px;
+    background-color:transparent;
+    padding: 10px;
+    border-radius: 4px;
+    padding-left: 300px;
+    color: #d7fd00;
+    text-align: left;
+    white-space: pre; /* Maintain whitespace and newlines */
+    font-family: monospace; /* Use monospace for alignment */
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Rule Engine with AST</h1>
+
+      <h2 style="margin-top: 50px;" >Create Rule</h2>
+      <form id="create-rule-form">
+        <div>
+          <label for="ruleName">Rule Name:</label>
+          <input type="text" id="ruleName" name="ruleName" required />
+        </div>
+        <div>
+          <label for="ruleString">Rule:</label>
+          <input type="text" id="ruleString" name="ruleString" required />
+        </div>
+        <button type="submit">Create Rule</button>
+      </form>
+      <pre id="create-rule-result"></pre>
+
+      <hr>
+
+      <h2 style="margin-top: 50px;">Combine Rules</h2>
+      <form id="combine-rules-form">
+        <h3>Enter Rules to Combine:</h3>
+        <div id="rules-inputs">
+          <div class="rule-container">
+            <label for="combine-rule1">Rule 1:</label>
+            <input type="text" id="combine-rule1" name="rule1" required />
+            <label for="operator1">Operator:</label>
+            <select id="operator1" name="operator1">
+              <option value="AND">AND</option>
+              <option value="OR">OR</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" id="add-rule">Add Another Rule</button>
+        <button type="submit">Combine Rules</button>
+      </form>
+      <pre id="combine-rules-result"></pre>
+
+      <hr>
+      <h2 style="margin-top: 50px;">Evaluate Rule</h2>
+      <form id="evaluate-rule-form">
+        <div>
+          <label for="evaluate-ast">Rule Name:</label>
+          <input type="text" id="evaluate-ast" name="ast" required />
+        </div>
+        <div>
+          <label for="evaluate-data">Data JSON:</label>
+          <textarea id="evaluate-data" name="data" required></textarea>
+        </div>
+        <button type="submit">Evaluate Rule</button>
+      </form>
+      <pre id="evaluate-rule-result"></pre>
+    </div>
+
+    <script>
+function generateTreeHTML(node, prefix = '', isLeft = true, last = true) {
+    if (!node) return '';
+
+    // Construct the correct prefixes for each node
+    let treeHTML = prefix;
+    treeHTML += last ? '└── ' : '├── ';
+    treeHTML += node.type === 'operator' ? node.operator : `${node.key} ${node.operator} ${node.value}`;
+    treeHTML += '\n'; // Use newline for preformatted text
+
+    // Update the prefix for the children
+    prefix += last ? '    ' : '│   ';
+
+    // Gather children nodes if they exist
+    const children = [];
+    if (node.left) children.push({ node: node.left, last: !node.right });
+    if (node.right) children.push({ node: node.right, last: true });
+
+    // Recursively generate HTML for each child node
+    for (let i = 0; i < children.length; i++) {
+        treeHTML += generateTreeHTML(children[i].node, prefix, true, children[i].last);
+    }
+
+    return treeHTML;
+}
+
+      function displayTree(tree) {
+        const treeHTML = generateTreeHTML(tree);
+        document.getElementById("create-rule-result").innerHTML = treeHTML;
+      }
+
+      // Handle Create Rule form submission
+      document
+        .getElementById("create-rule-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const ruleName = document.getElementById("ruleName").value;
+          const ruleString = document.getElementById("ruleString").value;
+          const response = await fetch("/api/rules/create_rule", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ruleName, ruleString }),
+          });
+          const result = await response.json();
+          let treeHTML = generateTreeHTML(result.ruleAST);
+          treeHTML += `<br><p>Rule Name: ${result.ruleName}</p>`;
+          document.getElementById("create-rule-result").innerHTML = treeHTML;
+        });
+
+      // Handle Combine Rules form submission
+      document
+        .getElementById("combine-rules-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const op = document.getElementById("operator1").value;
+          const rules = Array.from(
+            document.querySelectorAll('input[id^="combine-rule"]')
+          ).map((input) => input.value);
+          const response = await fetch("/api/rules/combine_rules", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ rules, op }),
+          });
+          const result = await response.json();
+          let treeHTML = generateTreeHTML(result.ruleAST);
+          treeHTML += `<br><p>Rule Name: ${result.ruleName}</p>`;
+          document.getElementById("combine-rules-result").innerHTML = treeHTML;
+        });
+
+      // Add functionality to dynamically add more rule inputs
+      document
+        .getElementById("add-rule")
+        .addEventListener("click", function () {
+          const ruleInputContainer = document.createElement("div");
+          ruleInputContainer.classList.add("rule-container");
+          const ruleCount =
+            document.querySelectorAll('input[id^="combine-rule"]').length + 1;
+          ruleInputContainer.innerHTML = `
+                <label for="combine-rule${ruleCount}">Rule ${ruleCount}:</label>
+                <input type="text" id="combine-rule${ruleCount}" name="rule${ruleCount}" required>
+            `;
+          document
+            .getElementById("rules-inputs")
+            .appendChild(ruleInputContainer);
+          this.remove();
+        });
+
+      // Handle Evaluate Rule form submission
+      document
+        .getElementById("evaluate-rule-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const ast = document.getElementById("evaluate-ast").value;
+          const data = document.getElementById("evaluate-data").value;
+          const response = await fetch("/api/rules/evaluate_rule", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ast, data: JSON.parse(data) }),
+          });
+          const result = await response.json();
+          document.getElementById("evaluate-rule-result").textContent =
+            JSON.stringify(result, null, 2);
+        });
+    </script>
+  </body>
+</html>
