@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ruleController = require('../controllers/ruleController');
+const ruleController = require('../controllers/ruleController.js');
 
 router.post('/create_rule', ruleController.createRule);
 router.post('/combine_rules', ruleController.combineRules);
